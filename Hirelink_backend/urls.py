@@ -1,8 +1,12 @@
+#Hirelink_backend/Hirelink_backend/urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponse
+from users.views.auth_views import LogoutView
+
+
 
 def home(request):
     return HttpResponse("""
@@ -71,6 +75,8 @@ urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
+    path('logout/', LogoutView.as_view(), name='logout'),
+
 ]
 
 if settings.DEBUG:
