@@ -5,7 +5,7 @@ import { ThemeProvider } from './ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'HireLink',
-  description: 'Portail de recrutement HireLink',
+  description: 'Job Portal HireLink',
 };
 
 export default function RootLayout({

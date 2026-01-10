@@ -1,0 +1,32 @@
+{
+  "model_performance": {
+    "quality_model": {
+      "test_rmse": 0.14455170501974246,
+      "test_mae": 0.13183964336474324,
+      "test_r2": 0.9722043415126219,
+      "cv_rmse_mean": 0.14459807457027068,
+      "cv_rmse_std": 0.0035767478859374574
+    },
+    "ats_model": {
+      "accuracy": 0.6113989637305699,
+      "class_weights": {
+        "0": 1.6292372881355932,
+        "1": 0.7213883677298312
+      }
+    }
+  },
+  "dataset_info": {
+    "training_samples": 769,
+    "testing_samples": 193,
+    "total_features": 166
+  },
+  "training_params": {
+    "quality_model": "XGBoost with reduced complexity",
+    "ats_model": "RandomForest with balanced classes",
+    "vectorizer": "TF-IDF with 150 features"
+  },
+  "feature_info": {
+    "text_features": 150,
+    "numeric_features": 16
+  }
+}

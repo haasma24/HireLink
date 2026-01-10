@@ -42,10 +42,9 @@ export function AuthLayout({ title, subtitle, children }: Props) {
           />
           <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/70 via-slate-900/40 to-transparent" />
           <div className="absolute bottom-6 left-6 right-6 space-y-2 text-slate-50">
-            <h2 className="text-xl font-semibold">Plateforme HireLink</h2>
+            <h2 className="text-xl font-semibold">HireLink</h2>
             <p className="text-xs text-slate-200">
-              Suivez les candidatures, gérez les offres et collaborez avec les
-              recruteurs dans une interface fluide.
+              Track applications, manage offers, and collaborate with recruiters in a seamless interface.
             </p>
           </div>
         </div>

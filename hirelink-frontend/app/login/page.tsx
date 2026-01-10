@@ -26,7 +26,7 @@ export default function LoginPage() {
     const password = String(formData.get('password') || '');
 
     if (!email || !password) {
-      setError('Merci de renseigner votre adresse email et votre mot de passe.');
+      setError('Please enter your email address and password.');
       setLoading(false);
       return;
     }
@@ -44,12 +44,12 @@ export default function LoginPage() {
         localStorage.setItem('user_id', String(data.user_id));
       }
 
-      setInfo('Connexion réussie. Redirection vers votre espace.');
+      setInfo('Login successful. Redirecting to your space.');
       const redirectTo =
         data.role === 'candidate'
-          ? '/candidate/dashboard'
+          ? '/dashboard'
           : data.role === 'recruiter'
-          ? '/recruiter/dashboard'
+          ? '/dashboard/recruiter'
           : '/admin/dashboard';
 
       setTimeout(() => router.push(redirectTo), 800);
@@ -57,7 +57,7 @@ export default function LoginPage() {
       const msg =
         typeof err?.message === 'string' && err.message.trim()
           ? err.message
-          : 'Les identifiants fournis ne sont pas reconnus. Vérifiez vos informations et réessayez.';
+          : 'The provided credentials were not recognized. Please check your information and try again.';
       setError(msg);
     } finally {
       setLoading(false);
@@ -66,12 +66,12 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      title="Connexion à HireLink"
-      subtitle="Accédez à votre espace candidat, recruteur ou administrateur."
+      title="Log in to HireLink"
+      subtitle="Access your candidate, recruiter, or administrator space."
     >
       {error && (
         <div className="rounded-md border border-red-500/60 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          <p className="font-medium">Impossible de vous connecter</p>
+          <p className="font-medium">Unable to log in</p>
           <p className="mt-0.5 text-xs">{error}</p>
         </div>
       )}
@@ -84,7 +84,7 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
           <label className="text-sm font-medium text-slate-900 dark:text-slate-100">
-            Adresse email
+            Email address
           </label>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 dark:text-slate-500">
@@ -95,14 +95,14 @@ export default function LoginPage() {
               type="email"
               required
               className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-8 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50 dark:placeholder:text-slate-500"
-              placeholder="vous@example.com"
+              placeholder="you@example.com"
             />
           </div>
         </div>
 
         <div className="space-y-1">
           <label className="text-sm font-medium text-slate-900 dark:text-slate-100">
-            Mot de passe
+            Password
           </label>
           <div className="relative">
             <input
@@ -110,15 +110,15 @@ export default function LoginPage() {
               type={showPassword ? 'text' : 'password'}
               required
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50 dark:placeholder:text-slate-500"
-              placeholder="Votre mot de passe"
+              placeholder="Your password"
             />
             <button
               type="button"
               onClick={() => setShowPassword(v => !v)}
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-              aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
-              {showPassword ? 'Masquer' : 'Afficher'}
+              {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
         </div>
@@ -131,14 +131,14 @@ export default function LoginPage() {
               onChange={e => setRemember(e.target.checked)}
               className="h-3 w-3 rounded border-slate-400 bg-white text-blue-500 dark:border-slate-600 dark:bg-slate-900"
             />
-            Rester connecté sur cet appareil
+            Stay logged in on this device
           </label>
           <button
             type="button"
             onClick={() => router.push('/password-reset')}
             className="text-blue-600 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
           >
-            Mot de passe oublié
+            Forgot password?
           </button>
         </div>
 
@@ -147,18 +147,18 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 disabled:opacity-60 transition-colors"
         >
-          {loading ? 'Connexion en cours...' : 'Se connecter'}
+          {loading ? 'Logging in...' : 'Log in'}
         </button>
       </form>
 
       <p className="pt-2 text-center text-xs text-slate-600 dark:text-slate-300">
-        Nouveau sur HireLink ?{' '}
+        New to HireLink?{' '}
         <button
           type="button"
           onClick={() => router.push('/register')}
           className="text-blue-600 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
         >
-          Créer un compte gratuitement
+          Create a free account
         </button>
       </p>
     </AuthLayout>

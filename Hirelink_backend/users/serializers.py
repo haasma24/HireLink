@@ -75,12 +75,4 @@ class LoginSerializer(serializers.Serializer):
         return data
 
 
-class UserSerializer(serializers.ModelSerializer):
-    entreprise = EntrepriseSerializer(read_only=True)
-    class Meta:
-        model = CustomUser
-        fields = (
-            'id', 'username', 'email', 'role', 'full_name', 'phone',
-            'date_of_birth', 'profile_picture', 'entreprise', 'is_validated'
-        )
-        read_only_fields = ('id', 'username', 'email', 'role')
+

@@ -1,28 +1,16 @@
-# serializers.py
+# applications/serializers.py
 from rest_framework import serializers
-from .models import Job, Application, Interview, ApplicationStatusLog, Notification
+from .models import Application, Interview, ApplicationStatusLog, Notification
+from jobs.models import Job  # Import from jobs app
+from jobs.serializers import JobSerializer  # Import JobSerializer
 from django.utils import timezone
-
-# Temporary Job Serializer
-class JobSerializer(serializers.ModelSerializer):
-    recruiter_name = serializers.CharField(source='recruiter.full_name', read_only=True)
-    has_applied = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = Job
-        fields = '__all__'
-    
-    def get_has_applied(self, obj):
-        request = self.context.get('request')
-        if request and request.user.is_authenticated and request.user.role == 'candidate':
-            return obj.application_set.filter(candidate=request.user).exists()
-        return False
 
 # YOUR Application Serializers
 class ApplicationSerializer(serializers.ModelSerializer):
     candidate_name = serializers.CharField(source='candidate.full_name', read_only=True)
     job_title = serializers.CharField(source='job.title', read_only=True)
-    company_name = serializers.CharField(source='job.recruiter.full_name', read_only=True)
+    company_name = serializers.CharField(source='job.company', read_only=True)  # Changed from job.recruiter to job.company
+    posted_by_name = serializers.CharField(source='job.posted_by.full_name', read_only=True)  # New field
     
     class Meta:
         model = Application
@@ -35,11 +23,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
             candidate = self.context['request'].user
             
             # Check if already applied
-            if job.application_set.filter(candidate=candidate).exists():
+            if job.applications.filter(applicant=candidate).exists():  # Changed from application_set
                 raise serializers.ValidationError("You have already applied for this job")
             
             # Check application deadline
-            if job.application_deadline and job.application_deadline < timezone.now():
+            if job.application_deadline and job.application_deadline < timezone.now().date():
                 raise serializers.ValidationError("Application deadline has passed")
         
         return attrs

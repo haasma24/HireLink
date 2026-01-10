@@ -45,12 +45,12 @@ export default function RegisterPage() {
     }
 
     if (!payload.password || !payload.password2) {
-      setError('Merci de saisir et confirmer votre mot de passe.');
+      setError('Please enter and confirm your password.');
       setLoading(false);
       return;
     }
     if (payload.password !== payload.password2) {
-      setError('Les mots de passe ne correspondent pas. Vérifiez et réessayez.');
+      setError('Passwords do not match. Please check and try again.');
       setLoading(false);
       return;
     }
@@ -58,21 +58,28 @@ export default function RegisterPage() {
     try {
       const data = await apiFetch('/users/register/', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(payload),
       });
 
       setMessage(
         data.message ||
           (role === 'recruiter'
-            ? 'Inscription recruteur enregistrée. Votre compte sera validé par un administrateur.'
-            : 'Inscription réussie. Vous êtes maintenant connecté.')
+            ? 'Recruiter registration submitted. Your account will be validated by an administrator.'
+            : 'Registration successful. You are now logged in.')
       );
 
       if (role === 'candidate') {
-        if (typeof window !== 'undefined' && data.access_token && data.refresh_token) {
+        if (
+          typeof window !== 'undefined' &&
+          data.access_token &&
+          data.refresh_token
+        ) {
           localStorage.setItem('access_token', data.access_token);
           localStorage.setItem('refresh_token', data.refresh_token);
-          localStorage.setItem('user_role', data.role);
+          localStorage.setItem('user_role', data.role || 'candidate');
           localStorage.setItem('user_id', String(data.user_id));
         }
         setTimeout(() => router.push('/dashboard'), 1000);
@@ -83,7 +90,7 @@ export default function RegisterPage() {
       const msg =
         typeof err?.message === 'string' && err.message.trim()
           ? err.message
-          : "Un problème est survenu lors de l’inscription. Vérifiez les informations saisies.";
+          : 'A problem occurred during registration. Please check the information entered.';
       setError(msg);
     } finally {
       setLoading(false);
@@ -92,12 +99,12 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout
-      title="Créer un compte HireLink"
-      subtitle="Inscrivez-vous en tant que candidat ou recruteur."
+      title="Create a HireLink account"
+      subtitle="Register as a candidate or recruiter."
     >
       {error && (
         <div className="rounded-md border border-red-500/60 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          <p className="font-medium">Impossible de finaliser l’inscription</p>
+          <p className="font-medium">Unable to complete registration</p>
           <p className="mt-0.5 text-xs">{error}</p>
         </div>
       )}
@@ -111,7 +118,7 @@ export default function RegisterPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
             name="username"
-            placeholder="Nom d’utilisateur"
+            placeholder="Username"
             required
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50 dark:placeholder:text-slate-500"
           />
@@ -126,52 +133,52 @@ export default function RegisterPage() {
 
         <input
           name="full_name"
-          placeholder="Nom complet"
+          placeholder="Full name"
           className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50 dark:placeholder:text-slate-500"
         />
 
         <input
           name="phone"
-          placeholder="Téléphone"
+          placeholder="Phone"
           className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50 dark:placeholder:text-slate-500"
         />
 
         <div className="space-y-1">
           <label className="text-sm font-medium text-slate-900 dark:text-slate-100">
-            Rôle
+            Role
           </label>
           <select
             name="role"
             value={role}
-            onChange={e => setRole(e.target.value as Role)}
+            onChange={(e) => setRole(e.target.value as Role)}
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50"
             required
           >
-            <option value="candidate">Candidat</option>
-            <option value="recruiter">Recruteur</option>
+            <option value="candidate">Candidate</option>
+            <option value="recruiter">Recruiter</option>
           </select>
         </div>
 
         {role === 'recruiter' && (
           <div className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-3 text-xs text-slate-800 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 space-y-2">
-            <p className="font-semibold text-sm">Informations société</p>
+            <p className="font-semibold text-sm">Company information</p>
             <div className="grid grid-cols-1 gap-2">
               <input
                 name="company_name"
-                placeholder="Nom de l’entreprise"
+                placeholder="Company name"
                 required={role === 'recruiter'}
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-50"
               />
               <input
                 name="company_address"
-                placeholder="Adresse"
+                placeholder="Address"
                 required={role === 'recruiter'}
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-50"
               />
               <input
                 name="company_website"
                 type="url"
-                placeholder="Site web (facultatif)"
+                placeholder="Website (optional)"
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-50"
               />
             </div>
@@ -183,16 +190,16 @@ export default function RegisterPage() {
             <input
               name="password"
               type={showPassword ? 'text' : 'password'}
-              placeholder="Mot de passe"
+              placeholder="Password"
               required
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50"
             />
             <button
               type="button"
-              onClick={() => setShowPassword(v => !v)}
+              onClick={() => setShowPassword((v) => !v)}
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
             >
-              {showPassword ? 'Masquer' : 'Afficher'}
+              {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
 
@@ -200,16 +207,16 @@ export default function RegisterPage() {
             <input
               name="password2"
               type={showPassword2 ? 'text' : 'password'}
-              placeholder="Confirmer le mot de passe"
+              placeholder="Confirm password"
               required
               className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50"
             />
             <button
               type="button"
-              onClick={() => setShowPassword2(v => !v)}
+              onClick={() => setShowPassword2((v) => !v)}
               className="absolute inset-y-0 right-0 flex items-center pr-3 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
             >
-              {showPassword2 ? 'Masquer' : 'Afficher'}
+              {showPassword2 ? 'Hide' : 'Show'}
             </button>
           </div>
         </div>
@@ -219,17 +226,17 @@ export default function RegisterPage() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 disabled:opacity-60 transition-colors"
         >
-          {loading ? 'Création du compte...' : 'Créer le compte HireLink'}
+          {loading ? 'Creating account...' : 'Create HireLink account'}
         </button>
 
         <p className="pt-1 text-center text-xs text-slate-600 dark:text-slate-300">
-          Vous avez déjà un compte ?{' '}
+          Already have an account?{' '}
           <button
             type="button"
             onClick={() => router.push('/login')}
             className="text-blue-600 hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
           >
-            Se connecter
+            Log in
           </button>
         </p>
       </form>

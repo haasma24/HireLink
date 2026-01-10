@@ -3,9 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Temporary job endpoints (for testing)
-    path('jobs/', views.JobListView.as_view(), name='job-list'),
-    path('jobs/<int:pk>/', views.JobDetailView.as_view(), name='job-detail'),
     
     # YOUR application workflow endpoints
     path('applications/', views.ApplicationListView.as_view(), name='application-list'),

@@ -1,4 +1,4 @@
-# views.py
+# applications/views.py
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,32 +8,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db.models import Q, Count
 from django.utils import timezone
-from .models import Job, Application, Interview, Notification,ApplicationStatusLog
+from .models import Application, Interview, Notification, ApplicationStatusLog
 from .serializers import (
-    JobSerializer, ApplicationSerializer, InterviewSerializer, 
-    NotificationSerializer, ApplicationCreateSerializer,serializers
+    ApplicationSerializer, InterviewSerializer, 
+    NotificationSerializer, ApplicationCreateSerializer
 )
+from jobs.serializers import JobSerializer
+from jobs.models import Job  # Import Job from jobs app
 import logging
 
 logger = logging.getLogger(__name__)
-
-# Temporary Job Views (for testing your application system)
-class JobListView(generics.ListAPIView):
-    """Temporary - for candidates to browse jobs and apply"""
-    serializer_class = JobSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['job_type', 'location']
-    search_fields = ['title', 'description']
-    ordering_fields = ['created_at']
-    ordering = ['-created_at']
-    
-    def get_queryset(self):
-        return Job.objects.filter(is_active=True)
-
-class JobDetailView(generics.RetrieveAPIView):
-    """Temporary - get job details to apply"""
-    serializer_class = JobSerializer
-    queryset = Job.objects.filter(is_active=True)
 
 # YOUR CORE APPLICATION WORKFLOW VIEWS
 class ApplicationListView(generics.ListCreateAPIView):
@@ -51,19 +35,20 @@ class ApplicationListView(generics.ListCreateAPIView):
     
     def get_queryset(self):
         # Candidates can only see their own applications
-        return Application.objects.filter(candidate=self.request.user).select_related('job', 'job__recruiter')
+        return Application.objects.filter(candidate=self.request.user).select_related('job', 'job__posted_by')  # Changed from recruiter to posted_by
     
     def perform_create(self, serializer):
         application = serializer.save()
         
-        # Create notification for recruiter
-        Notification.objects.create(
-            user=application.job.recruiter,
-            notification_type='application_submitted',
-            title='New Application Received',
-            message=f"{application.candidate.full_name} applied for {application.job.title}",
-            related_application=application
-        )
+        # Create notification for recruiter - use job.posted_by
+        if application.job.posted_by:
+            Notification.objects.create(
+                user=application.job.posted_by,  # Changed from job.recruiter to job.posted_by
+                notification_type='application_submitted',
+                title='New Application Received',
+                message=f"{application.candidate.full_name} applied for {application.job.title}",
+                related_application=application
+            )
         
         logger.info(f"Application created: {application.id} by {self.request.user.username}")
 
@@ -134,7 +119,7 @@ class ApplicationStatusWebhook(APIView):
             application = Application.objects.get(id=application_id)
             
             # Verify the user has permission to update this application
-            if request.user.role != 'recruiter' or application.job.recruiter != request.user:
+            if request.user.role != 'recruiter' or application.job.posted_by != request.user:  # Changed from job.recruiter to job.posted_by
                 return Response(
                     {'error': 'Permission denied'}, 
                     status=status.HTTP_403_FORBIDDEN

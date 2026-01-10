@@ -21,7 +21,7 @@ export default function PasswordResetRequestPage() {
     const email = String(formData.get('email') || '').trim();
 
     if (!email) {
-      setError('Merci de renseigner votre adresse email.');
+      setError('Please enter your email address.');
       setLoading(false);
       return;
     }
@@ -34,13 +34,13 @@ export default function PasswordResetRequestPage() {
 
       setMessage(
         data?.message ||
-          "Si un compte correspond à cette adresse, un lien de réinitialisation a été envoyé."
+          "If an account exists for this email, a reset link has been sent."
       );
     } catch (err: any) {
       const msg =
         typeof err?.message === 'string' && err.message.trim()
           ? err.message
-          : "Impossible d’envoyer l’email de réinitialisation pour le moment.";
+          : "Unable to send the reset email at this time.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -49,12 +49,12 @@ export default function PasswordResetRequestPage() {
 
   return (
     <AuthLayout
-      title="Réinitialiser votre mot de passe"
-      subtitle="Entrez votre adresse email pour recevoir un lien sécurisé."
+      title="Reset your password"
+      subtitle="Enter your email address to receive a secure link."
     >
       {error && (
         <div className="rounded-md border border-red-500/60 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          <p className="font-medium">Envoi impossible</p>
+          <p className="font-medium">Unable to send</p>
           <p className="mt-0.5 text-xs">{error}</p>
         </div>
       )}
@@ -67,14 +67,14 @@ export default function PasswordResetRequestPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
           <label className="text-sm font-medium text-slate-900 dark:text-slate-100">
-            Adresse email
+            Email address
           </label>
           <input
             name="email"
             type="email"
             required
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50"
-            placeholder="vous@example.com"
+            placeholder="you@example.com"
           />
         </div>
 
@@ -83,7 +83,7 @@ export default function PasswordResetRequestPage() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 disabled:opacity-60 transition-colors"
         >
-          {loading ? 'Envoi en cours...' : 'Envoyer le lien de réinitialisation'}
+          {loading ? 'Sending...' : 'Send reset link'}
         </button>
       </form>
     </AuthLayout>

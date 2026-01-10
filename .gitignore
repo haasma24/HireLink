@@ -28,3 +28,6 @@ Thumbs.db
 node_modules/
 dist/
 build/
+
+hirelink-frontend/.next/
+.next/

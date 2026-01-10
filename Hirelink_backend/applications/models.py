@@ -1,35 +1,12 @@
-# models.py
+# applications/models.py
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from jobs.models import Job  # Import Job from jobs app
 
 User = get_user_model()
 
-# TEMPORARY Job model - your friend will replace this later
-class Job(models.Model):
-    JOB_TYPES = (
-        ('full_time', 'Full Time'),
-        ('part_time', 'Part Time'),
-        ('contract', 'Contract'),
-        ('remote', 'Remote'),
-    )
-    
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    location = models.CharField(max_length=100, default='Remote')
-    job_type = models.CharField(max_length=20, choices=JOB_TYPES, default='full_time')
-    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'recruiter'})
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    application_deadline = models.DateTimeField(null=True, blank=True)
-    
-    class Meta:
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return self.title
-
-# YOUR Application Models
+# YOUR Application Models - NO Job model here, use the one from jobs app
 class Application(models.Model):
     STATUS_CHOICES = (
         ('applied', 'Applied'),
@@ -44,7 +21,7 @@ class Application(models.Model):
     )
     
     candidate = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'candidate'})
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)  # Using Job from jobs app
     cover_letter = models.TextField()
     resume = models.FileField(upload_to='resumes/%Y/%m/%d/')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')

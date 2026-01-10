@@ -1,3 +1,4 @@
+# Hirelink_backend/users/serializers/registration_serializer.py
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from users.models import CustomUser, Entreprise

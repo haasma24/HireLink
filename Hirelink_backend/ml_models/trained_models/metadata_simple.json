@@ -1,0 +1,25 @@
+{
+  "model_performance": {
+    "quality_model": {
+      "test_rmse": 0.33207076752298603,
+      "test_r2": 0.85331293410008
+    },
+    "ats_model": {
+      "accuracy": 0.5077720207253886
+    }
+  },
+  "features_used": [
+    "word_count",
+    "has_email",
+    "has_phone",
+    "section_count",
+    "bullet_point_count",
+    "tech_keyword_count",
+    "action_verb_count",
+    "has_skills_section",
+    "has_experience_section",
+    "has_education_section"
+  ],
+  "training_samples": 769,
+  "testing_samples": 193
+}

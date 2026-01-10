@@ -1,3 +1,4 @@
+# Hirelink_backend/users/views/register_views.py
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from users.serializers import RegistrationSerializer

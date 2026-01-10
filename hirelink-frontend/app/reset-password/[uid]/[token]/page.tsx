@@ -27,12 +27,12 @@ export default function ResetPasswordPage() {
     const password2 = String(formData.get('password2') || '');
 
     if (!password || !password2) {
-      setError('Merci de saisir et confirmer votre nouveau mot de passe.');
+      setError('Please enter and confirm your new password.');
       setLoading(false);
       return;
     }
     if (password !== password2) {
-      setError('Les deux mots de passe doivent être identiques.');
+      setError('The two passwords must match.');
       setLoading(false);
       return;
     }
@@ -47,14 +47,14 @@ export default function ResetPasswordPage() {
       );
 
       setMessage(
-        data?.message || 'Votre mot de passe a été mis à jour avec succès.'
+        data?.message || 'Your password has been successfully updated.'
       );
       setTimeout(() => router.push('/login'), 1500);
     } catch (err: any) {
       const msg =
         typeof err?.message === 'string' && err.message.trim()
           ? err.message
-          : 'Le lien de réinitialisation est invalide ou a expiré.';
+          : 'The reset link is invalid or has expired.';
       setError(msg);
     } finally {
       setLoading(false);
@@ -63,12 +63,12 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthLayout
-      title="Définir un nouveau mot de passe"
-      subtitle="Saisissez un nouveau mot de passe pour sécuriser votre compte."
+      title="Set a new password"
+      subtitle="Enter a new password to secure your account."
     >
       {error && (
         <div className="rounded-md border border-red-500/60 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-          <p className="font-medium">Réinitialisation impossible</p>
+          <p className="font-medium">Reset unsuccessful</p>
           <p className="mt-0.5 text-xs">{error}</p>
         </div>
       )}
@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
           <input
             name="password"
             type={showPassword ? 'text' : 'password'}
-            placeholder="Nouveau mot de passe"
+            placeholder="New password"
             required
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50"
           />
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
             onClick={() => setShowPassword(v => !v)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
           >
-            {showPassword ? 'Masquer' : 'Afficher'}
+            {showPassword ? 'Hide' : 'Show'}
           </button>
         </div>
 
@@ -100,7 +100,7 @@ export default function ResetPasswordPage() {
           <input
             name="password2"
             type={showPassword2 ? 'text' : 'password'}
-            placeholder="Confirmer le mot de passe"
+            placeholder="Confirm password"
             required
             className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-50"
           />
@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
             onClick={() => setShowPassword2(v => !v)}
             className="absolute inset-y-0 right-0 flex items-center pr-3 text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
           >
-            {showPassword2 ? 'Masquer' : 'Afficher'}
+            {showPassword2 ? 'Hide' : 'Show'}
           </button>
         </div>
 
@@ -118,7 +118,7 @@ export default function ResetPasswordPage() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 disabled:opacity-60 transition-colors"
         >
-          {loading ? 'Mise à jour...' : 'Enregistrer le nouveau mot de passe'}
+          {loading ? 'Updating...' : 'Save new password'}
         </button>
       </form>
     </AuthLayout>
